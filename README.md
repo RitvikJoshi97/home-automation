@@ -10,6 +10,7 @@ A comprehensive home automation system that monitors network devices and display
 
 - Real-time network device detection
 - Device presence monitoring
+- Device prioritization for personalized greetings
 - Weather information display
 - Recipe suggestions
 - Modern, responsive dashboard interface
@@ -91,7 +92,28 @@ The dashboard will be available at `http://localhost:3000`
 Receives device data from the network scanner.
 
 ### GET /api/devices
-Returns the latest device data for the frontend.
+Returns the latest device data for the frontend, sorted by priority.
+
+### PUT /api/devices/:mac/name
+Updates the display name of a device.
+
+### PUT /api/devices/:mac/priority
+Updates the priority of a device, which affects greeting order.
+
+### PUT /api/devices/:mac/preferences
+Updates the preferences of a device (type, location, user, etc.).
+
+## Device Priority System
+
+The system includes a device priority feature that determines which user gets greeted on the dashboard:
+
+1. Device priority is determined by the order in the `known_devices.csv` file
+2. Devices at the top of the file have higher priority
+3. When multiple known devices are present, the one with highest priority is greeted
+4. New devices are added with lowest priority by default
+5. Priorities can be modified using the API endpoint `/api/devices/:mac/priority`
+
+This allows personalization of the dashboard based on which users should be prioritized for greetings and preferences.
 
 ## Contributing
 
