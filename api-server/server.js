@@ -402,7 +402,16 @@ app.get('/api/weather/:location', async (req, res) => {
                 ...weatherData.current,
                 condition: getWeatherCondition(weatherData.current.weather_code),
                 prefersDarkMode: shouldUseDarkMode(weatherData.current)
-              }
+              },
+              // Process daily forecast data
+              forecast: weatherData.daily.time.map((time, index) => ({
+                date: time,
+                condition: getWeatherCondition(weatherData.daily.weather_code[index]),
+                max: weatherData.daily.temperature_2m_max[index],
+                min: weatherData.daily.temperature_2m_min[index],
+                precipitation_probability: weatherData.daily.precipitation_probability_max[index],
+                weather_code: weatherData.daily.weather_code[index]
+              }))
             };
             
             // Cache the weather data
@@ -446,7 +455,16 @@ app.get('/api/weather/:location', async (req, res) => {
             ...weatherData.current,
             condition: getWeatherCondition(weatherData.current.weather_code),
             prefersDarkMode: shouldUseDarkMode(weatherData.current)
-          }
+          },
+          // Process daily forecast data
+          forecast: weatherData.daily.time.map((time, index) => ({
+            date: time,
+            condition: getWeatherCondition(weatherData.daily.weather_code[index]),
+            max: weatherData.daily.temperature_2m_max[index],
+            min: weatherData.daily.temperature_2m_min[index],
+            precipitation_probability: weatherData.daily.precipitation_probability_max[index],
+            weather_code: weatherData.daily.weather_code[index]
+          }))
         };
         
         // Cache the weather data
@@ -490,7 +508,16 @@ app.get('/api/weather/:location', async (req, res) => {
           ...weatherData.current,
           condition: getWeatherCondition(weatherData.current.weather_code),
           prefersDarkMode: shouldUseDarkMode(weatherData.current)
-        }
+        },
+        // Process daily forecast data
+        forecast: weatherData.daily.time.map((time, index) => ({
+          date: time,
+          condition: getWeatherCondition(weatherData.daily.weather_code[index]),
+          max: weatherData.daily.temperature_2m_max[index],
+          min: weatherData.daily.temperature_2m_min[index],
+          precipitation_probability: weatherData.daily.precipitation_probability_max[index],
+          weather_code: weatherData.daily.weather_code[index]
+        }))
       };
       
       // Cache the weather data
