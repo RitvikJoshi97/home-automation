@@ -1,25 +1,56 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 3000;
 
-// Store the latest device data
-let latestDevices = [];
+// Configure CORS
+app.use(cors({
+  origin: ['http://localhost:5001', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept'],
+}));
 
-app.use(cors());
 app.use(express.json());
 
-// Endpoint to receive device data from Python scanner
-app.post('/api/devices', (req, res) => {
-    latestDevices = req.body;
-    res.json({ status: 'success' });
+// Store devices in memory (you might want to use a database in production)
+let devices = [];
+
+// Logging middleware
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] ${req.method} ${req.url}`);
+  next();
 });
 
-// Endpoint to get device data for the frontend
 app.get('/api/devices', (req, res) => {
-    res.json(latestDevices);
+  console.log(`[${new Date().toISOString()}] GET /api/devices - Returning ${devices.length} devices`);
+  res.json(devices);
 });
 
-app.listen(port, () => {
-    console.log(`API server running at http://localhost:${port}`);
+app.post('/api/devices', (req, res) => {
+  const timestamp = new Date().toISOString();
+  const newDevices = req.body;
+  
+  if (!Array.isArray(newDevices)) {
+    console.log(`[${timestamp}] Error: Received non-array data`);
+    return res.status(400).json({ error: 'Expected array of devices' });
+  }
+
+  console.log(`[${timestamp}] POST /api/devices - Received ${newDevices.length} device(s)`);
+  
+  // Log the devices being received
+  newDevices.forEach(device => {
+    console.log(`[${timestamp}] Device: ${device.mac} (${device.hostname || 'Unknown'}) - ${device.ip}`);
+  });
+
+  // Replace the entire devices array with the new data
+  devices = newDevices;
+  
+  console.log(`[${timestamp}] Updated device count: ${devices.length}`);
+  res.json({ success: true, count: devices.length });
+});
+
+const PORT = 5002;
+app.listen(PORT, () => {
+  console.log(`[${new Date().toISOString()}] API server running on port ${PORT}`);
+  console.log(`[${new Date().toISOString()}] Ready to receive device updates`);
 });
