@@ -22,9 +22,11 @@ A comprehensive home automation system that monitors network devices and display
 - Network administrator privileges (for the scanner)
 
 ## Project Structure 
+```
 ├── network-scanner/ # Python service for network device detection
 ├── api-server/ # Node.js API server
 └── dashboard/ # Next.js frontend dashboard
+```
 
 ## Installation
 
